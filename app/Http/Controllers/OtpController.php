@@ -19,9 +19,11 @@ class OtpController extends Controller
         return view ('otp');
     }
 
-    public function store(OtpVerificationRequest $request)
+    public function store(Request $request)
     {
-        $otpVerification = $request->validated(); 
+        $request->validate([
+            'otp' => 'required|size:4'
+        ]) ;
   
         $email = Auth::user()->email;
         $user = User::where('email', $email)->first();
