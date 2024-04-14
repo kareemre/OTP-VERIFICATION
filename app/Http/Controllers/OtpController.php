@@ -23,19 +23,18 @@ class OtpController extends Controller
     {
         $request->validate([
             'otp' => 'required|size:4'
-        ]) ;
+        ]);
   
         $email = Auth::user()->email;
         $user = User::where('email', $email)->first();
-        if (! hash_equals((string) sha1($request->input('otp')), (string) $user->otp)) {
-            dd($user);
+        if (! hash_equals((string) $user->otp,  (string) sha1($request->input('otp')))) {
+            return false;
         }
+
         if ($user) {
             $user->OTp = null;
             $user->save();
-            return redirect()->route('dashboard, absolute: false');
+            return redirect(route('dashboard', absolute: false));
         }
-        
-
     }
 }
