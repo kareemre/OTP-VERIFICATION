@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\UserRegistered;
+use App\Service\SendOtpService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -10,12 +11,21 @@ use Illuminate\Queue\InteractsWithQueue;
 
 class SendOtpNotification
 {
+
+    /**
+     * an instance of sendOtpService class
+     * 
+     * @var \App\Service\SendOtpService
+     */
+    private $sendOtpService;
+
+
     /**
      * Create the event listener.
      */
-    public function __construct()
+    public function __construct(SendOtpService $sendOtpService)
     {
-        //
+        $this->sendOtpService = $sendOtpService;
     }
 
     /**
@@ -23,9 +33,11 @@ class SendOtpNotification
      */
     public function handle(UserRegistered $event): void
     {
-        if (! $event->user->hasVerifiedOtp()) {
+        if (! $this->sendOtpService->hasOtp($event->user)) {
 
-            $event->user->sendOtpVerification();
+            $this->sendOtpService->setOtp($event->user);
+
+            $this->sendOtpService->sendOtpNotification($event->user);
         }
     }
 }

@@ -11,12 +11,14 @@ class OtpNotification extends Notification
 {
     use Queueable;
 
+    private $otp;
+
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct($otp)
     {
-        //
+        $this->otp = $otp;
     }
 
     /**
@@ -33,10 +35,8 @@ class OtpNotification extends Notification
      * Get the mail representation of the notification.
      */
     public function toMail(object $notifiable): MailMessage
-    {
-        $otp = generateOtp();
-        
-        return $this->buildOtpMessage($otp);
+    {   
+        return $this->buildOtpMessage($this->otp);
     }
 
     protected function buildOtpMessage($otp)

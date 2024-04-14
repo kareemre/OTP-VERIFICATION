@@ -1,10 +1,35 @@
 <?php
 
+use App\Http\Controllers\OtpController;
 use App\Http\Controllers\RegisterUserController;
+use App\Http\Middleware\VerifiedOtp;
 use Illuminate\Support\Facades\Route;
 
-Route::get('register',[RegisterUserController::class,'create']);
+//dashboard
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', VerifiedOtp::class])->name('dashboard');
 
-Route::post('register',[RegisterUserController::class,'register'])->name('re');
+
+
+Route::middleware('guest')->group(function () {
+    Route::get('register', [RegisterUserController::class, 'create']);
+                
+
+    Route::post('register-user', [RegisterUserController::class, 'store'])
+                ->name('register');;
+});
+
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('register-otp', [OtpController::class, 'create'])
+                ->name('otp.notice');
+
+
+    Route::post('otp/register', [OtpController::class, 'store'])
+                ->name('register.otp');
+});
+
 
 

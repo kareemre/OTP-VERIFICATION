@@ -4,12 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Events\UserRegistered;
 use App\Models\User;
+use App\Service\UserRegisterService;
+use App\Service\VerifyOtpService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
+use PharIo\Manifest\Email;
 
 class RegisterUserController extends Controller
 {
+
+
+    // /**
+    //  * an instance of UserRegisterService class
+    //  * 
+    //  * @var \App\Service\UserRegisterService
+    //  */
+    // private $userRegisterService;
+
+
+    // public function __construct(UserRegisterService $userRegisterService)
+    // {
+    //     $this->userRegisterService = $userRegisterService;
+    // }
+
 
     /**
      * Display the registration view
@@ -22,23 +42,22 @@ class RegisterUserController extends Controller
 
 
     /**
-     * @register a new user
+     * validate request, and call userRegisterService
+     * 
+     * @param  \Request
+     * @param  \App\Service\UserRegisterService 
+     * @throws \Illuminate\Validation\ValidationException
      */
-    public function register(Request $request)
+    public function store(Request $request, UserRegisterService $userRegisterService): RedirectResponse
     {
-        $request->validate([
+        $requestData = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
         ]);
+        
+        $userRegisterService->registerUser($requestData);
 
-        $user = User::create([
-            'username'=> $request->name,
-            'email'=> $request->email,
-        ]);
-
-        event(new UserRegistered($user));
+        return redirect(route('dashboard', absolute: false));
     }
-
-
 
 }
