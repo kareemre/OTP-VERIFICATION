@@ -13,11 +13,12 @@ Route::get('/dashboard', function () {
 
 
 Route::middleware('guest')->group(function () {
-    Route::get('register', [RegisterUserController::class, 'create']);
+    Route::get('register', [RegisterUserController::class, 'create'])
+                ->name('register');
                 
 
     Route::post('register-user', [RegisterUserController::class, 'store'])
-                ->name('register');;
+                ->name('register.user');
 });
 
 

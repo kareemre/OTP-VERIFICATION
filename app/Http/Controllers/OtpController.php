@@ -28,7 +28,7 @@ class OtpController extends Controller
         $email = Auth::user()->email;
         $user = User::where('email', $email)->first();
         if (! hash_equals((string) $user->otp,  (string) sha1($request->input('otp')))) {
-            return false;
+            echo'not ok';
         }
 
         if ($user) {
