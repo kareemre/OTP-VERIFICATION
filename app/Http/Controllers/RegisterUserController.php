@@ -16,25 +16,10 @@ use PharIo\Manifest\Email;
 class RegisterUserController extends Controller
 {
 
-
-    // /**
-    //  * an instance of UserRegisterService class
-    //  * 
-    //  * @var \App\Service\UserRegisterService
-    //  */
-    // private $userRegisterService;
-
-
-    // public function __construct(UserRegisterService $userRegisterService)
-    // {
-    //     $this->userRegisterService = $userRegisterService;
-    // }
-
-
     /**
      * Display the registration view
      */
-    public function  create(): View
+    public function  create()
     {
         return view ('register');
     }
